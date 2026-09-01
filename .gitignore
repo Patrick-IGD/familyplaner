@@ -1,26 +1,9 @@
-# Secrets and local configuration
+node_modules/
+/build
+/dist
+/.svelte-kit
 .env
 .env.*
 !.env.example
-*.pem
-*.key
-*.p12
-*.json.key
-credentials*.json
-
-# Node / Svelte / test output
-**/node_modules/
-**/.svelte-kit/
-**/build/
-**/dist/
-**/coverage/
-**/test-results/
-**/playwright-report/
-**/__pycache__/
-*.py[cod]
-
-# Runtime artifacts
-*.dump
 *.log
-*.pid
-.DS_Store
+spikes/001-runtime-resources/dist/
