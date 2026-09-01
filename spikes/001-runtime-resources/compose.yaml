@@ -1,0 +1,133 @@
+name: familyboard-spike
+
+x-app: &app
+  image: familyboard-spike:local
+  build:
+    context: .
+
+x-app-environment: &app-environment
+  FAMILYBOARD_DATABASE_URL: postgresql://familyboard:${FAMILYBOARD_DB_PASSWORD:?set FAMILYBOARD_DB_PASSWORD}@db:5432/familyboard
+  FAMILYBOARD_APP_ORIGIN: http://localhost:3300
+  FAMILYBOARD_LOG_LEVEL: info
+
+services:
+  db:
+    image: postgres:17.9-alpine
+    command:
+      - postgres
+      - -c
+      - shared_buffers=64MB
+      - -c
+      - max_connections=30
+      - -c
+      - work_mem=2MB
+      - -c
+      - maintenance_work_mem=32MB
+    environment:
+      POSTGRES_DB: familyboard
+      POSTGRES_USER: familyboard
+      POSTGRES_PASSWORD: ${FAMILYBOARD_DB_PASSWORD:?set FAMILYBOARD_DB_PASSWORD}
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U familyboard -d familyboard']
+      interval: 2s
+      timeout: 2s
+      retries: 20
+      start_period: 5s
+    mem_limit: 256m
+    cpus: 0.75
+    pids_limit: 100
+    restart: unless-stopped
+    volumes:
+      - database:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  migrate:
+    <<: *app
+    command: ['node', 'dist/migrate.js']
+    environment:
+      <<: *app-environment
+      FAMILYBOARD_ROLE: worker
+    depends_on:
+      db:
+        condition: service_healthy
+    mem_limit: 128m
+    cpus: 0.5
+    pids_limit: 50
+    restart: 'no'
+    networks:
+      - backend
+
+  web:
+    <<: *app
+    command: ['node', 'build']
+    environment:
+      <<: *app-environment
+      FAMILYBOARD_AUTH_SECRET: ${FAMILYBOARD_AUTH_SECRET:?set FAMILYBOARD_AUTH_SECRET}
+      FAMILYBOARD_AUTH_TEST_MODE: ${FAMILYBOARD_AUTH_TEST_MODE:-false}
+      FAMILYBOARD_ROLE: web
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "fetch('http://127.0.0.1:3000/health/ready').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 10s
+    mem_limit: 256m
+    cpus: 1.0
+    pids_limit: 100
+    restart: unless-stopped
+    ports:
+      - '127.0.0.1:3300:3000'
+    networks:
+      - backend
+
+  worker:
+    <<: *app
+    command: ['node', 'dist/worker.js']
+    environment:
+      <<: *app-environment
+      FAMILYBOARD_ROLE: worker
+      SPIKE_CRASH_AFTER_EFFECT_KEY: ${SPIKE_CRASH_AFTER_EFFECT_KEY:-}
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    mem_limit: 192m
+    cpus: 0.75
+    pids_limit: 100
+    restart: unless-stopped
+    stop_grace_period: 15s
+    networks:
+      - backend
+
+  submit:
+    <<: *app
+    profiles: ['tools']
+    command:
+      ['node', 'dist/send-probe.js', '${PROBE_BUSINESS_KEY:-runtime:demo}', '${PROBE_COUNT:-1}']
+    environment:
+      <<: *app-environment
+      FAMILYBOARD_ROLE: worker
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    mem_limit: 128m
+    cpus: 0.5
+    pids_limit: 50
+    restart: 'no'
+    networks:
+      - backend
+
+volumes:
+  database:
+
+networks:
+  backend:

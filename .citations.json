@@ -1,0 +1,131 @@
+{
+  "version": 1,
+  "sources": [
+    {
+      "id": 1,
+      "url": "https://www.synology.com/en-global/products/DS225+",
+      "title": "Synology DiskStation DS225+ – Technical Specifications",
+      "accessed": "2026-08-17"
+    },
+    {
+      "id": 2,
+      "url": "https://developers.google.com/workspace/calendar/api/auth",
+      "title": "Google Calendar API – Authentication and authorization",
+      "accessed": "2026-08-17"
+    },
+    {
+      "id": 3,
+      "url": "https://developers.google.com/workspace/calendar/api/v3/reference/freebusy/query",
+      "title": "Google Calendar API – Freebusy query",
+      "accessed": "2026-08-17"
+    },
+    {
+      "id": 4,
+      "url": "https://tailscale.com/kb/1131/synology",
+      "title": "Tailscale on Synology",
+      "accessed": "2026-08-17"
+    },
+    {
+      "id": 5,
+      "url": "https://tailscale.com/kb/1153/enabling-https",
+      "title": "Tailscale HTTPS certificates",
+      "accessed": "2026-08-17"
+    },
+    {
+      "id": 6,
+      "url": "https://tailscale.com/kb/1312/serve",
+      "title": "Tailscale Serve",
+      "accessed": "2026-08-17"
+    },
+    {
+      "id": 7,
+      "url": "https://svelte.dev/docs/kit/adapter-node",
+      "title": "SvelteKit – Node servers",
+      "accessed": "2026-08-17"
+    },
+    {
+      "id": 8,
+      "url": "https://svelte.dev/docs/kit/service-workers",
+      "title": "SvelteKit – Service workers",
+      "accessed": "2026-08-17"
+    },
+    {
+      "id": 9,
+      "url": "https://www.better-auth.com/docs/plugins/passkey",
+      "title": "Better Auth – Passkey plugin",
+      "accessed": "2026-08-17"
+    },
+    {
+      "id": 10,
+      "url": "https://orm.drizzle.team/docs/overview",
+      "title": "Drizzle ORM – Overview",
+      "accessed": "2026-08-17"
+    },
+    {
+      "id": 11,
+      "url": "https://nextjs.org/docs/app/guides/self-hosting",
+      "title": "Next.js – Self-hosting",
+      "accessed": "2026-08-17"
+    },
+    {
+      "id": 12,
+      "url": "https://nextjs.org/docs/app/guides/progressive-web-apps",
+      "title": "Next.js – Progressive Web Apps",
+      "accessed": "2026-08-17"
+    },
+    {
+      "id": 13,
+      "url": "https://nuxt.com/docs/4.x/getting-started/deployment",
+      "title": "Nuxt 4 – Deployment",
+      "accessed": "2026-08-17"
+    },
+    {
+      "id": 14,
+      "url": "https://github.com/timgit/pg-boss",
+      "title": "pg-boss – PostgreSQL job queue",
+      "accessed": "2026-08-17"
+    },
+    {
+      "id": 15,
+      "url": "https://www.better-auth.com/docs/integrations/svelte-kit",
+      "title": "Better Auth – SvelteKit integration",
+      "accessed": "2026-08-17"
+    },
+    {
+      "id": 16,
+      "url": "https://www.better-auth.com/docs/adapters/drizzle",
+      "title": "Better Auth – Drizzle adapter",
+      "accessed": "2026-08-17"
+    },
+    {
+      "id": 17,
+      "url": "https://www.better-auth.com/docs/concepts/session-management",
+      "title": "Better Auth – Session management",
+      "accessed": "2026-08-17"
+    },
+    {
+      "id": 18,
+      "url": "https://developers.google.com/workspace/guides/create-credentials",
+      "title": "Google Workspace – Create service account credentials",
+      "accessed": "2026-08-17"
+    },
+    {
+      "id": 19,
+      "url": "https://developers.google.com/workspace/calendar/api/concepts/sharing",
+      "title": "Google Calendar API – Sharing and ACLs",
+      "accessed": "2026-08-17"
+    },
+    {
+      "id": 20,
+      "url": "https://developers.google.com/workspace/calendar/api/guides/sync",
+      "title": "Google Calendar API – Incremental synchronization",
+      "accessed": "2026-08-17"
+    },
+    {
+      "id": 21,
+      "url": "https://developers.google.com/workspace/calendar/api/guides/push",
+      "title": "Google Calendar API – Push notifications",
+      "accessed": "2026-08-17"
+    }
+  ]
+}

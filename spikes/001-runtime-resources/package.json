@@ -1,0 +1,46 @@
+{
+  "name": "familyboard-runtime-spike",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "dev": "vite dev --host 0.0.0.0",
+    "build": "npm run build:web && npm run build:worker",
+    "build:web": "vite build",
+    "build:worker": "esbuild src/worker.ts src/migrate.ts src/send-probe.ts --bundle --packages=external --platform=node --format=esm --outdir=dist",
+    "preview": "vite preview --host 0.0.0.0",
+    "test": "vitest run",
+    "test:integration": "vitest run --config vitest.integration.config.ts",
+    "test:e2e": "playwright test",
+    "test:watch": "vitest",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "format:check": "prettier --check .",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "@better-auth/passkey": "1.6.29",
+    "better-auth": "1.6.29",
+    "kysely": "0.29.5",
+    "pg": "8.23.0",
+    "pg-boss": "12.27.0",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@sveltejs/adapter-node": "5.5.7",
+    "@sveltejs/kit": "2.70.2",
+    "@playwright/test": "1.62.1",
+    "@types/node": "26.2.0",
+    "@types/pg": "8.21.0",
+    "esbuild": "0.28.2",
+    "prettier": "3.9.6",
+    "prettier-plugin-svelte": "4.1.1",
+    "svelte": "5.56.9",
+    "svelte-check": "4.7.6",
+    "typescript": "6.0.3",
+    "vite": "8.2.1",
+    "vitest": "4.1.10"
+  }
+}
