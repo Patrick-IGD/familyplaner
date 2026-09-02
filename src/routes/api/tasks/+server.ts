@@ -1,14 +1,14 @@
 import { json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import {
-  householdTasks,
+  tasksForMember,
   reportCompletion,
 } from "$lib/server/modules/tasks/service";
 
 export const GET: RequestHandler = async ({ locals }) => {
   if (!locals.member)
     return json({ error: "unauthenticated" }, { status: 401 });
-  return json({ tasks: await householdTasks(locals.member.householdId) });
+  return json({ tasks: await tasksForMember(locals.member.id, locals.member.householdId) });
 };
 
 export const POST: RequestHandler = async ({ locals, request }) => {

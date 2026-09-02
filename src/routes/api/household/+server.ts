@@ -2,7 +2,8 @@ import { json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import { getDb } from "$lib/server/db";
 import { household, member } from "$lib/server/db/schema";
-import { eq } from "drizzle-orm";
+import { eq } from 'drizzle-orm';
+import { ensureTodaysOccurrences } from '$lib/server/modules/tasks/admin';
 
 // Öffentliche Haushaltsdaten für den Haushaltsmodus: nur gemeinsame,
 // nicht-personenbezogene Informationen. Keine Punktstände, keine
@@ -13,8 +14,10 @@ export const GET: RequestHandler = async () => {
   const db = getDb();
   const [householdRow] = await db.select().from(household).limit(1);
   if (!householdRow) {
-    return json({ error: "no household" }, { status: 404 });
+    return json({ error: 'no household' }, { status: 404 });
   }
+  // Wiederkehrende Aufgaben: sicherstellen, dass heutige Vorkommen existieren.
+  await ensureTodaysOccurrences(householdRow.id);
   const members = await db
     .select({
       id: member.id,

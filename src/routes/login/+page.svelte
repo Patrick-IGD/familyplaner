@@ -4,12 +4,12 @@
 
   type MemberView = { id: string; displayName: string; role: string; avatarColor: string };
 
-  let members: MemberView[] = [];
-  let selected: MemberView | null = null;
-  let pin = '';
-  let error = '';
-  let locked = false;
-  let busy = false;
+  let members = $state<MemberView[]>([]);
+  let selected = $state<MemberView | null>(null);
+  let pin = $state('');
+  let error = $state('');
+  let locked = $state(false);
+  let busy = $state(false);
 
   onMount(async () => {
     const res = await fetch('/api/household');
@@ -49,24 +49,28 @@
 
 <svelte:head><title>Familienplaner – Anmeldung</title></svelte:head>
 
-<main>
+<main class="login">
+  <p class="card-tab">Anmeldung</p>
   <h1>Wer bist du?</h1>
+
   {#if !selected}
     <ul class="avatars">
       {#each members as m (m.id)}
         <li>
-          <button class="avatar" style="background: {m.avatarColor}" onclick={() => (selected = m)}>
-            {m.displayName.slice(0, 1)}
+          <button class="avatar-pick" onclick={() => (selected = m)}>
+            <span class="avatar big" style="background: {m.avatarColor}"
+              >{m.displayName.slice(0, 1)}</span>
+            <span class="name">{m.displayName}</span>
           </button>
-          <span>{m.displayName}</span>
         </li>
       {/each}
     </ul>
   {:else}
-    <div class="pin-box">
-      <p>
-        <i class="avatar big" style="background: {selected.avatarColor}">{selected.displayName.slice(0, 1)}</i>
-        {selected.displayName}
+    <div class="card pin-box">
+      <p class="row">
+        <i class="avatar" style="background: {selected.avatarColor}"
+          >{selected.displayName.slice(0, 1)}</i>
+        <strong>{selected.displayName}</strong>
       </p>
       <form onsubmit={(e) => { e.preventDefault(); login(); }}>
         <input
@@ -78,10 +82,15 @@
           bind:value={pin}
           disabled={locked || busy}
         />
-        <button type="submit" disabled={locked || busy || !pin}>Anmelden</button>
+        <button type="submit" class="btn btn-primary" disabled={locked || busy || !pin}>
+          Anmelden
+        </button>
       </form>
-      {#if error}<p class="error" role="alert">{error}</p>{/if}
-      <button class="link" onclick={() => { selected = null; pin = ''; error = ''; }}>
+      {#if error}<p class="message bad" role="alert">{error}</p>{/if}
+      <button
+        class="btn btn-ghost btn-small"
+        onclick={() => { selected = null; pin = ''; error = ''; }}
+      >
         Anderer Account
       </button>
     </div>
@@ -89,94 +98,65 @@
 </main>
 
 <style>
-  :global(body) {
-    margin: 0;
-    color: #18302a;
-    background: #edf3ef;
-    font-family: system-ui, sans-serif;
-  }
-
-  main {
-    width: min(28rem, 100% - 2rem);
+  .login {
+    width: min(30rem, 100% - 2rem);
     margin-inline: auto;
     padding-block: 2rem;
+    display: grid;
+    gap: 1rem;
+    justify-items: start;
   }
+
+  h1 { font-size: clamp(1.5rem, 4vw, 2.2rem); margin: 0; }
 
   .avatars {
     list-style: none;
     padding: 0;
+    margin: 0;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(6rem, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr));
+    gap: 0.9rem;
+    width: 100%;
   }
 
-  .avatars li {
+  .avatar-pick {
     display: grid;
     justify-items: center;
-    gap: 0.4rem;
-  }
-
-  .avatar {
-    display: inline-grid;
-    place-items: center;
-    width: 3.5rem;
-    height: 3.5rem;
-    border-radius: 50%;
-    border: none;
-    font-style: normal;
-    font-size: 1.2rem;
-    font-weight: 700;
+    gap: 0.45rem;
+    padding: 0.9rem 0.5rem;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    font: inherit;
     cursor: pointer;
+    transition: transform 0.06s ease;
   }
+  .avatar-pick:hover { transform: translateY(-2px); }
+  .avatar-pick:active { transform: translateY(0); }
 
   .avatar.big {
-    width: 2rem;
-    height: 2rem;
-    font-size: 0.9rem;
+    width: 3.4rem;
+    height: 3.4rem;
+    font-size: 1.3rem;
   }
 
+  .name { font-weight: 700; }
+
   .pin-box {
-    background: #fff;
-    border-radius: 0.75rem;
+    width: 100%;
     padding: 1.25rem;
     display: grid;
-    gap: 0.75rem;
+    gap: 0.85rem;
   }
 
   input {
-    font-size: 1.4rem;
+    font-size: 1.5rem;
     letter-spacing: 0.3em;
     text-align: center;
     width: 100%;
-    box-sizing: border-box;
-    padding: 0.5rem;
-    border: 1px solid #b8c8bf;
-    border-radius: 0.5rem;
+    padding: 0.55rem;
   }
 
-  button[type='submit'] {
-    margin-top: 0.5rem;
-    width: 100%;
-    background: #18302a;
-    color: #fff;
-    border: none;
-    padding: 0.6rem;
-    border-radius: 0.5rem;
-    font-weight: 700;
-    font-size: 1rem;
-    cursor: pointer;
-  }
-
-  .link {
-    background: none;
-    border: none;
-    color: #4c6258;
-    text-decoration: underline;
-    cursor: pointer;
-  }
-
-  .error {
-    color: #a1271c;
-    margin: 0;
-  }
+  button[type='submit'] { width: 100%; justify-content: center; }
 </style>

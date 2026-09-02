@@ -25,6 +25,7 @@ export type TaskView = {
   rewarded: boolean;
   dueDate: Date;
   status: string;
+  poolTask?: boolean;
   assignedMemberIds: string[];
 };
 
@@ -201,6 +202,7 @@ export async function tasksForMember(
     rewarded: row.template.rewarded,
     dueDate: row.occurrence.dueDate,
     status: row.occurrence.status,
+    poolTask: row.template.poolTask,
     assignedMemberIds: [],
   }));
 }
@@ -238,10 +240,52 @@ export async function householdTasks(householdId: string): Promise<TaskView[]> {
     rewarded: row.template.rewarded,
     dueDate: row.occurrence.dueDate,
     status: row.occurrence.status,
+    poolTask: row.template.poolTask,
     assignedMemberIds: assignments
       .filter((a) => a.occurrenceId === row.occurrence.id)
       .map((a) => a.memberId),
   }));
+}
+
+// Aufgabenpool: offene Pool-Vorkommen ohne Zuweisung.
+export async function poolTasks(householdId: string): Promise<TaskView[]> {
+  const all = await householdTasks(householdId);
+  return all.filter(
+    (task) =>
+      task.poolTask && task.assignedMemberIds.length === 0 && task.status === 'open',
+  );
+}
+
+// Übernahme aus dem Aufgabenpool macht aus dem offenen Haushaltsbeitrag
+// eine zugewiesene Aufgabe (CONTEXT.md: Aufgabenpool).
+export async function claimPoolTask(
+  occurrenceId: string,
+  memberId: string,
+  householdId: string,
+): Promise<{ status: 'ok' } | { status: 'invalid' }> {
+  const db = getDb();
+  const [occurrence] = await db
+    .select()
+    .from(taskOccurrence)
+    .where(and(eq(taskOccurrence.id, occurrenceId), eq(taskOccurrence.status, 'open')));
+  if (!occurrence) return { status: 'invalid' };
+
+  const [template] = await db
+    .select()
+    .from(taskTemplate)
+    .where(eq(taskTemplate.id, occurrence.templateId));
+  if (!template || template.householdId !== householdId || !template.poolTask) {
+    return { status: 'invalid' };
+  }
+
+  const existing = await db
+    .select()
+    .from(taskAssignment)
+    .where(eq(taskAssignment.occurrenceId, occurrenceId));
+  if (existing.length > 0) return { status: 'invalid' };
+
+  await db.insert(taskAssignment).values({ occurrenceId, memberId });
+  return { status: 'ok' };
 }
 
 export async function pendingReports(householdId: string) {

@@ -1,0 +1,191 @@
+/* Familienplaner — Design-System „Studio-Zettelkasten"
+   Ziel: Wanddisplay 16:9 / 16:10 / 4:3 (distanzlesbar), Smartphone,
+   Tablets und Desktop-Profilansichten.
+   Prinzipien: Karten mit klarer Kante, Reihen, ruhiges Papier,
+   große lesbare Typo fürs Wanddisplay. */
+
+:root {
+  /* Palette: warmes Papier, Tinte, AkzentMarker */
+  --paper: #f4f1e8;
+  --card: #fdfcf7;
+  --ink: #23211c;
+  --ink-soft: #5d584d;
+  --ink-faint: #8b8577;
+  --line: #d8d2c0;
+  --line-strong: #a9a189;
+
+  --accent: #b3541e;        /* Marker-Orange */
+  --accent-ink: #fff8f2;
+  --ok: #2f6b3c;
+  --ok-bg: #e2eede;
+  --warn: #8a6d1a;
+  --warn-bg: #f3ead0;
+  --bad: #a1271c;
+  --bad-bg: #f2ddd8;
+
+  --radius: 4px;            /* Zettel: klare Kante, kaum Rundung */
+  --shadow: 0 1px 2px rgba(35, 33, 28, 0.08), 0 2px 8px rgba(35, 33, 28, 0.06);
+  --font-stack: system-ui, "Segoe UI", sans-serif;
+}
+
+/* --- Grundflächen --- */
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--paper);
+  background-image:
+    linear-gradient(rgba(216, 210, 192, 0.35) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(216, 210, 192, 0.35) 1px, transparent 1px);
+  background-size: 32px 32px;
+  color: var(--ink);
+  font-family: var(--font-stack);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --- Karten (Zettel) --- */
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+/* Zettel-Reiter: kleine Markierung oben links wie ein Klebestreifen */
+.card-tab {
+  display: inline-block;
+  padding: 0.1rem 0.55rem;
+  border: 1px solid var(--line);
+  border-bottom: none;
+  border-radius: var(--radius) var(--radius) 0 0;
+  background: var(--warn-bg);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--warn);
+}
+
+/* --- Typografie --- */
+h1, h2, h3 { margin: 0; }
+
+.text-muted { color: var(--ink-soft); }
+.text-faint { color: var(--ink-faint); }
+
+/* --- Buttons --- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid var(--ink);
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 700;
+  padding: 0.55rem 1.1rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: transform 0.06s ease, box-shadow 0.06s ease;
+}
+.btn:hover { box-shadow: var(--shadow); }
+.btn:active { transform: translateY(1px); }
+.btn:disabled { opacity: 0.45; cursor: default; }
+
+.btn-primary {
+  background: var(--ink);
+  color: var(--card);
+}
+.btn-accent {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+.btn-ok { background: var(--ok); border-color: var(--ok); color: #fff; }
+.btn-bad { background: var(--bad); border-color: var(--bad); color: #fff; }
+.btn-ghost { border-color: var(--line-strong); font-weight: 600; }
+.btn-small { padding: 0.35rem 0.75rem; font-size: 0.9rem; }
+
+/* --- Badges --- */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.12rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+.badge-ok { background: var(--ok-bg); border-color: var(--ok); color: var(--ok); }
+.badge-warn { background: var(--warn-bg); border-color: var(--warn); color: var(--warn); }
+.badge-bad { background: var(--bad-bg); border-color: var(--bad); color: var(--bad); }
+
+/* Punkte-Chip */
+.points-chip {
+  display: inline-grid;
+  place-items: center;
+  min-width: 2.2rem;
+  height: 2.2rem;
+  padding: 0 0.4rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--ink);
+  background: var(--card);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+.points-chip.accent { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+
+/* --- Avatar --- */
+.avatar {
+  display: inline-grid;
+  place-items: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 50%;
+  border: 2px solid var(--card);
+  box-shadow: 0 0 0 1px var(--line-strong);
+  font-style: normal;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+/* --- Formulare --- */
+input[type='text'], input[type='password'], select, textarea {
+  font: inherit;
+  color: var(--ink);
+  background: var(--card);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  padding: 0.55rem 0.75rem;
+}
+input:focus-visible, select:focus-visible, button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* --- Layout-Hilfen --- */
+.stack { display: grid; gap: 1rem; }
+.row { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+
+/* --- Meldungsstreifen --- */
+.message {
+  border-left: 4px solid var(--ok);
+  background: var(--ok-bg);
+  color: var(--ok);
+  padding: 0.7rem 1rem;
+  border-radius: var(--radius);
+  font-weight: 600;
+}
+.message.bad { border-left-color: var(--bad); background: var(--bad-bg); color: var(--bad); }
+
+/* --- Wanddisplay: Grundtext größer, wenn genug Platz --- */
+@media (min-width: 1024px) and (min-height: 700px) {
+  body { font-size: 1.125rem; }
+}
